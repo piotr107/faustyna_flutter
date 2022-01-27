@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:faustyna/constants/constants.dart';
 import 'package:faustyna/pages/home/home_view.dart';
 import 'package:faustyna/services/api_service.dart';
@@ -6,6 +8,7 @@ import 'package:get/get.dart';
 
 void main() {
   Get.put(RestApi());
+  HttpOverrides.global = MyHttpOverrides();
   runApp(MyApp());
 }
 
@@ -22,5 +25,14 @@ class MyApp extends StatelessWidget {
         ),
         home: HomePage(),
     );
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
